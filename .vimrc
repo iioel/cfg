@@ -168,4 +168,15 @@ set colorcolumn=80
 
 let g:EasyClipShareYanks=1
 
+match ErrorMsg '\s\+$'
 
+" Removes trailing spaces
+function! TrimWhiteSpace()
+  %s/\s\+$//e
+  endfunction
+  nnoremap <silent> <Leader>rts :call TrimWhiteSpace()<CR>
+
+  autocmd FileWritePre    * :call TrimWhiteSpace()
+  autocmd FileAppendPre   * :call TrimWhiteSpace()
+  autocmd FilterWritePre  * :call TrimWhiteSpace()
+  autocmd BufWritePre     * :call TrimWhiteSpace()
