@@ -122,7 +122,6 @@ source ~/.git-prompt.sh
 
 PS1='\[\e[1;36m\]╭╴\[\e[0;32m\]\u@\h\[\e[0;37m\]:\[\e[0;34m\]\w\[\e[0;37m\] - \[\e[0;33m\][\D{%H:%M:%S}]\[\e[0;32m\] $(__git_ps1 "(%s)")\n\[\e[1;36m\]╰╴> \[\e[0;37m\]'
 
-alias cdp='cd ~/src/puppetmaster/puppetmaster-c2c/'
 alias pull='git pull --rebase'
 alias rebase='git pull --rebase'
 alias equal='alsamixer -g -D equal'

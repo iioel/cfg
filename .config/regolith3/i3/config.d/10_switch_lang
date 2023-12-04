@@ -1,0 +1,1 @@
+bindsym $mod+e exec "gsettings set org.gnome.desktop.input-sources current $((! $( gsettings get org.gnome.desktop.input-sources current | cut -d' ' -f2)))"
