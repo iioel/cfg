@@ -213,6 +213,7 @@ require('lazy').setup({
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
+    lazy = false,
     build = ':TSUpdate',
   },
 
@@ -236,6 +237,7 @@ require('lazy').setup({
   { "github/copilot.vim", lazy = false },
   { "catppuccin/nvim", name = "catppuccin", priority = 1000 },
   { "mfussenegger/nvim-ansible" },
+  { "qvalentin/helm-ls.nvim", ft = "helm" },
 
 }, {})
 
@@ -383,7 +385,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 -- See `:help nvim-treesitter`
 -- Defer Treesitter setup after first render to improve startup time of 'nvim {filename}'
 vim.defer_fn(function()
-  require('nvim-treesitter.configs').setup {
+  require('nvim-treesitter.config').setup {
     -- Add languages to be installed here that you want installed for treesitter
     ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash' },
 
@@ -654,4 +656,32 @@ vim.keymap.set('n', '<leader><TAB>', ':tabnext<CR>', { desc = '[T]ab [N]ext' })
 -- vim.o.diffopt = vim.o.diffopt .. ',inline:word'
 --vim.opt.diffopt:append 'inline:word'
 
-print(vim.o.diffopt)
+vim.opt.diffopt:append("linematch:60") -- Recommended for modern Neovim
+vim.opt.diffopt:append("algorithm:histogram") -- Optional: smoother diffs
+
+-- 1. Highlight trailing whitespace
+-- This uses the 'match' command via the cmd wrapper
+vim.api.nvim_set_hl(0, 'ExtraWhitespace', { bg = '#c25b5b', fg = 'white' })
+vim.cmd([[match ExtraWhitespace '\s\+$']])
+
+-- 2. Define the Trim function
+-- We use a local function for better performance and scope
+local function trim_whitespace()
+    local save = vim.fn.winsaveview()
+    vim.cmd([[keepjumps %s/\s\+$//e]])
+    vim.fn.winrestview(save)
+end
+
+-- 3. Create the Keymap
+-- 'n' for normal mode, <Leader>rts as the trigger
+vim.keymap.set('n', '<Leader>rts', trim_whitespace, { desc = 'Trim trailing whitespace' })
+
+-- 4. Set up Autocmds
+-- We group them to prevent duplicates if you source your config multiple times
+local trim_group = vim.api.nvim_create_augroup('TrimWhiteSpaceGroup', { clear = true })
+
+vim.api.nvim_create_autocmd({ "FileWritePre", "FileAppendPre", "FilterWritePre", "BufWritePre" }, {
+    group = trim_group,
+    pattern = "*",
+    callback = trim_whitespace,
+})
