@@ -12,13 +12,6 @@ esac
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
 
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
@@ -129,7 +122,23 @@ alias equaliser='alsamixer -g -D equal'
 alias equalizer='alsamixer -g -D equal'
 alias alsamixer='alsamixer -g -c 1'
 alias node='nodejs'
-alias terraform='summon terraform'
-export PATH="$HOME/.tfenv/bin:$PATH"
-export SUMMON_PROVIDER=/usr/local/lib/gopass
-source <(gopass completion bash)
+alias vim='nvim'
+
+## Git completion
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
+## Go related configuration
+export PATH="$HOME/go/bin:$PATH"
+
+## History configuration
+# Append to history file instead of overwriting it
+shopt -s histappend
+
+# Save and reload history after every command
+PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
+# Optional: increase history size
+HISTSIZE=-1
+HISTFILESIZE=-1
