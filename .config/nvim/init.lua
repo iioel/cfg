@@ -685,3 +685,6 @@ vim.api.nvim_create_autocmd({ "FileWritePre", "FileAppendPre", "FilterWritePre",
     pattern = "*",
     callback = trim_whitespace,
 })
+
+-- Since nvim v0.12.0
+vim.opt.diffopt:append("inline:word")
